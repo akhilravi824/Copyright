@@ -61,7 +61,7 @@ const Layout = ({ children }) => {
       navigation.push({ name: 'Deleted Incidents', href: '/deleted-incidents', icon: Trash2 });
     }
     
-    // Add chat and AI Search for everyone
+    // Add chat and AI Search for everyone - updated
     navigation.push({ name: 'Chat', href: '/chat', icon: MessageCircle });
     navigation.push({ name: 'AI Search', href: '/ai-search', icon: Search });
   }
