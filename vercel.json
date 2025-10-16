@@ -1,11 +1,11 @@
 {
   "version": 2,
-  "buildCommand": "",
-  "outputDirectory": ".",
-  "routes": [
+  "buildCommand": "cd client && npm install && npm run build",
+  "outputDirectory": "client/build",
+  "rewrites": [
     {
-      "src": "/(.*)",
-      "dest": "/server/index.js"
+      "source": "/(.*)",
+      "destination": "/index.html"
     }
   ]
 }
