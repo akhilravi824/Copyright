@@ -29,16 +29,8 @@ const IncidentDetail = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { user } = useAuth();
-  
-  // Check if user is analyst (restricted role)
-  const isAnalyst = user?.role === 'analyst';
-  
-  // Check if current user is the reporter of this incident
-  const isIncidentReporter = incident?.reporter?.email === user?.email;
-  
-  // Analysts can edit incidents they created, but not others
-  const canEditIncident = !isAnalyst || (isAnalyst && isIncidentReporter);
 
+  // Fetch incident data first
   const { data: incident, isLoading } = useQuery(
     ['incident', id],
     () => api.get(`/api/incidents/${id}`).then(res => res.data),
@@ -46,6 +38,15 @@ const IncidentDetail = () => {
       enabled: !!id,
     }
   );
+
+  // Check if user is analyst (restricted role)
+  const isAnalyst = user?.role === 'analyst';
+
+  // Check if current user is the reporter of this incident
+  const isIncidentReporter = incident?.reporter?.email === user?.email;
+
+  // Analysts can edit incidents they created, but not others
+  const canEditIncident = !isAnalyst || (isAnalyst && isIncidentReporter);
 
   const updateStatusMutation = useMutation(
     (status) => api.put(`/api/incidents/${id}/status`, { status }),
