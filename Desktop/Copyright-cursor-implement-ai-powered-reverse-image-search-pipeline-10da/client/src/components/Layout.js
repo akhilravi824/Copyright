@@ -36,6 +36,7 @@ const Layout = ({ children }) => {
     navigation.push(
       { name: 'Dashboard', href: '/dashboard', icon: Home },
       { name: 'Incidents', href: '/incidents', icon: FileText },
+      { name: 'AI Search', href: '/ai-search', icon: Search },
       { name: 'Chat', href: '/chat', icon: MessageCircle }
     );
   } else {
@@ -46,6 +47,7 @@ const Layout = ({ children }) => {
       { name: 'Cases', href: '/cases', icon: FolderOpen },
       { name: 'Documents', href: '/documents', icon: FileCheck },
       { name: 'Templates', href: '/templates', icon: LayoutTemplate },
+      { name: 'AI Search', href: '/ai-search', icon: Search },
       { name: 'Monitoring', href: '/monitoring', icon: Search },
       { name: 'Reports', href: '/reports', icon: BarChart3 }
     );
