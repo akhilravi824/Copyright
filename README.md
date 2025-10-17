@@ -199,10 +199,26 @@ EMAIL_HOST=smtp.gmail.com
 EMAIL_USER=your-email@gmail.com
 EMAIL_PASS=your-app-password
 
+# Optional AI insights for reverse image search
+ENABLE_AI_REVERSE_IMAGE_SUMMARY=false
+# Required when enabling the feature
+OPENAI_API_KEY=your-openai-api-key
+# Optional overrides
+OPENAI_BASE_URL=https://api.openai.com/v1
+OPENAI_REVERSE_IMAGE_MODEL=gpt-4o-mini
+OPENAI_ORGANIZATION=
+OPENAI_PROJECT=
+OPENAI_REQUEST_TIMEOUT_MS=15000
+
 # Monitoring APIs
 GOOGLE_ALERTS_API_KEY=your-api-key
 BRANDMENTIONS_API_KEY=your-api-key
 ```
+
+To enable AI-enhanced insights on the reverse image search page, set `ENABLE_AI_REVERSE_IMAGE_SUMMARY=true` and provide a
+valid `OPENAI_API_KEY`. You can connect to Azure OpenAI or compatible services by overriding `OPENAI_BASE_URL` and optionally
+scoping requests with `OPENAI_ORGANIZATION` or `OPENAI_PROJECT`. If the AI service is unreachable, the platform automatically
+falls back to the deterministic summary pipeline so investigators still receive actionable results.
 
 ### User Roles
 
