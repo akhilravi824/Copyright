@@ -40,7 +40,9 @@ const parseBoolean = (value, defaultValue = false) => {
   return defaultValue;
 };
 
-router.post('/', upload.single('image'), async (req, res, next) => {
+const uploadSingleImage = upload.single('image');
+
+const executeReverseImageSearch = async (req, res, next) => {
   try {
     const { file } = req;
     const { imageUrl, includeMetadata, useAiInsights } = req.body;
@@ -91,6 +93,29 @@ router.post('/', upload.single('image'), async (req, res, next) => {
     console.error('Reverse image search failed:', error);
     return next(error);
   }
-});
+};
 
-module.exports = router;
+const handleReverseImageSearch = (req, res, next) => {
+  uploadSingleImage(req, res, (uploadError) => {
+    if (uploadError) {
+      if (uploadError.code === 'LIMIT_FILE_SIZE') {
+        return res.status(413).json({
+          success: false,
+          message: 'Uploaded image exceeds the 10MB size limit'
+        });
+      }
+
+      console.error('Reverse image search upload failed:', uploadError);
+      return next(uploadError);
+    }
+
+    return executeReverseImageSearch(req, res, next);
+  });
+};
+
+router.post('/', handleReverseImageSearch);
+
+module.exports = {
+  router,
+  handleReverseImageSearch
+};

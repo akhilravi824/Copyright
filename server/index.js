@@ -7,6 +7,10 @@ const rateLimit = require('express-rate-limit').default;
 require('dotenv').config();
 
 const databaseService = require('./config/databaseService');
+const {
+  router: reverseImageSearchRouter,
+  handleReverseImageSearch
+} = require('./routes/reverseImageSearch');
 
 const app = express();
 const PORT = process.env.PORT || 5001;
@@ -61,7 +65,8 @@ app.use('/api/documents', require('./routes/documents'));
 app.use('/api/monitoring', require('./routes/monitoring'));
 app.use('/api/reports', require('./routes/reports'));
 app.use('/api/templates', require('./routes/templates'));
-app.use('/api/reverse-image-search', require('./routes/reverseImageSearch'));
+app.post('/api/reverse-image-search', handleReverseImageSearch);
+app.use('/api/reverse-image-search', reverseImageSearchRouter);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
