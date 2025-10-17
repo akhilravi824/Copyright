@@ -22,6 +22,7 @@ import Profile from './pages/Profile';
 import DeletedIncidents from './pages/DeletedIncidents';
 import LoadingSpinner from './components/LoadingSpinner';
 import AuthCallback from './components/AuthCallback';
+import ReverseImageSearch from './pages/ReverseImageSearch';
 
 function App() {
   const { user, loading } = useAuth();
@@ -65,6 +66,7 @@ function App() {
         <Route path="/profile" element={<Profile />} />
         <Route path="/deleted-incidents" element={<DeletedIncidents />} />
         <Route path="/chat" element={<ChatPage />} />
+        <Route path="/reverse-image-search" element={<ReverseImageSearch />} />
         <Route path="*" element={<Navigate to="/dashboard" replace />} />
       </Routes>
     </Layout>
