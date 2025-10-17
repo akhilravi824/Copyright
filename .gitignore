@@ -141,3 +141,6 @@ client/dist/
 tmp/
 temp/
 .vercel
+
+# Reverse image search data
+server/data/reference-images.json

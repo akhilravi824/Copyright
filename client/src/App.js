@@ -16,6 +16,7 @@ import Documents from './pages/Documents';
 import Templates from './pages/Templates';
 import Monitoring from './pages/Monitoring';
 import Reports from './pages/Reports';
+import ReverseImageSearch from './pages/ReverseImageSearch';
 import Users from './pages/Users';
 import InviteAcceptance from './pages/InviteAcceptance';
 import Profile from './pages/Profile';
@@ -60,6 +61,7 @@ function App() {
         <Route path="/documents" element={<Documents />} />
         <Route path="/templates" element={<Templates />} />
         <Route path="/monitoring" element={<Monitoring />} />
+        <Route path="/reverse-image-search" element={<ReverseImageSearch />} />
         <Route path="/reports" element={<Reports />} />
         <Route path="/users" element={<Users />} />
         <Route path="/profile" element={<Profile />} />

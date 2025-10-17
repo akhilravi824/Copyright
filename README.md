@@ -29,6 +29,7 @@ This platform empowers DSP staff to:
 - **Google Alerts Integration**: Automated detection of DSP content usage
 - **BrandMentions API**: Comprehensive brand monitoring
 - **Web Scraping**: Scheduled scans of educational platforms and OER repositories
+- **Reverse Image Search**: Detect visually similar assets using perceptual hashing to identify potential infringements
 
 ### 📈 Reporting & Analytics
 - **Dashboard Analytics**: Charts showing incident trends and resolution outcomes

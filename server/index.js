@@ -4,12 +4,21 @@ const helmet = require('helmet');
 const compression = require('compression');
 const morgan = require('morgan');
 const rateLimit = require('express-rate-limit').default;
+const path = require('path');
+const fs = require('fs');
 require('dotenv').config();
 
 const databaseService = require('./config/databaseService');
 
 const app = express();
 const PORT = process.env.PORT || 5001;
+
+const uploadsDir = path.join(__dirname, 'uploads');
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir, { recursive: true });
+}
+
+app.use('/uploads', express.static(uploadsDir, { maxAge: '7d' }));
 
 // Trust proxy for rate limiting
 app.set('trust proxy', 1);
@@ -61,6 +70,7 @@ app.use('/api/documents', require('./routes/documents'));
 app.use('/api/monitoring', require('./routes/monitoring'));
 app.use('/api/reports', require('./routes/reports'));
 app.use('/api/templates', require('./routes/templates'));
+app.use('/api/reverse-image-search', require('./routes/reverseImageSearch'));
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {

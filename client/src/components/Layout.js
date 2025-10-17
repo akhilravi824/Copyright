@@ -19,7 +19,8 @@ import {
   Bell,
   Settings,
   Trash2,
-  MessageCircle
+  MessageCircle,
+  Image as ImageIcon
 } from 'lucide-react';
 
 const Layout = ({ children }) => {
@@ -36,6 +37,7 @@ const Layout = ({ children }) => {
     navigation.push(
       { name: 'Dashboard', href: '/dashboard', icon: Home },
       { name: 'Incidents', href: '/incidents', icon: FileText },
+      { name: 'Reverse Image Search', href: '/reverse-image-search', icon: ImageIcon },
       { name: 'Chat', href: '/chat', icon: MessageCircle }
     );
   } else {
@@ -47,6 +49,7 @@ const Layout = ({ children }) => {
       { name: 'Documents', href: '/documents', icon: FileCheck },
       { name: 'Templates', href: '/templates', icon: LayoutTemplate },
       { name: 'Monitoring', href: '/monitoring', icon: Search },
+      { name: 'Reverse Image Search', href: '/reverse-image-search', icon: ImageIcon },
       { name: 'Reports', href: '/reports', icon: BarChart3 }
     );
     
