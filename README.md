@@ -187,6 +187,8 @@ Key environment variables to configure:
 # Server Configuration
 PORT=5001
 NODE_ENV=development
+CLIENT_URL=http://localhost:3000
+ADDITIONAL_ALLOWED_ORIGINS=
 
 # Database
 MONGODB_URI=mongodb://localhost:27017/dsp-brand-protection
@@ -214,6 +216,9 @@ OPENAI_REQUEST_TIMEOUT_MS=15000
 GOOGLE_ALERTS_API_KEY=your-api-key
 BRANDMENTIONS_API_KEY=your-api-key
 ```
+
+`CLIENT_URL` should point at the primary frontend origin, while `ADDITIONAL_ALLOWED_ORIGINS` accepts a comma-separated list of
+secondary domains (such as Vercel preview URLs) that should be granted CORS access without requiring another deploy.
 
 To enable AI-enhanced insights on the reverse image search page, set `ENABLE_AI_REVERSE_IMAGE_SUMMARY=true` and provide a
 valid `OPENAI_API_KEY`. You can connect to Azure OpenAI or compatible services by overriding `OPENAI_BASE_URL` and optionally

@@ -31,14 +31,40 @@ const limiter = rateLimit({
 app.use(limiter);
 
 // CORS configuration
-app.use(cors({
-  origin: [
-    process.env.CLIENT_URL || 'http://localhost:3000',
-    'https://copyright-mu.vercel.app',
-    'https://vercel.app'
-  ],
+const defaultOrigins = [
+  process.env.CLIENT_URL || 'http://localhost:3000',
+  'https://copyright-mu.vercel.app'
+];
+
+if (process.env.ADDITIONAL_ALLOWED_ORIGINS) {
+  defaultOrigins.push(
+    ...process.env.ADDITIONAL_ALLOWED_ORIGINS.split(',')
+      .map((origin) => origin.trim())
+      .filter(Boolean)
+  );
+}
+
+const corsOptions = {
+  origin: (origin, callback) => {
+    if (!origin || defaultOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+
+    try {
+      const { hostname } = new URL(origin);
+      if (hostname === 'localhost' || hostname.endsWith('.vercel.app')) {
+        return callback(null, true);
+      }
+    } catch (parseError) {
+      console.warn('Invalid origin received in CORS check:', origin, parseError);
+    }
+
+    return callback(new Error('Not allowed by CORS'));
+  },
   credentials: true
-}));
+};
+
+app.use(cors(corsOptions));
 
 // Body parsing middleware
 app.use(express.json({ limit: '10mb' }));
