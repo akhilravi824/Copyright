@@ -7,10 +7,8 @@ const rateLimit = require('express-rate-limit').default;
 require('dotenv').config();
 
 const databaseService = require('./config/databaseService');
-const {
-  router: reverseImageSearchRouter,
-  handleReverseImageSearch
-} = require('./routes/reverseImageSearch');
+const reverseImageSearchRouter = require('./routes/reverseImageSearch');
+const { handleReverseImageSearch } = reverseImageSearchRouter;
 
 const app = express();
 const PORT = process.env.PORT || 5001;

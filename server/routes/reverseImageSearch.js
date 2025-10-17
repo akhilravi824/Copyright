@@ -115,7 +115,6 @@ const handleReverseImageSearch = (req, res, next) => {
 
 router.post('/', handleReverseImageSearch);
 
-module.exports = {
-  router,
-  handleReverseImageSearch
-};
+router.handleReverseImageSearch = handleReverseImageSearch;
+
+module.exports = router;
