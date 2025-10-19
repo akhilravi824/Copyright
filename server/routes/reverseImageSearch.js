@@ -66,4 +66,21 @@ router.post('/', upload.single('image'), async (req, res, next) => {
   }
 });
 
+router.get('/reference', (req, res) => {
+  return res.status(200).json({
+    success: false,
+    message: 'Use POST /api/reverse-image-search with an image upload or imageUrl payload.',
+    usage: {
+      endpoint: '/api/reverse-image-search',
+      method: 'POST',
+      body: {
+        image: 'multipart/form-data file (optional when imageUrl provided)',
+        imageUrl: 'string (optional when image provided)',
+        includeMetadata: 'boolean (defaults to true)',
+        useAiInsights: 'boolean (defaults to false)'
+      }
+    }
+  });
+});
+
 module.exports = router;
