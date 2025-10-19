@@ -11,6 +11,7 @@ import {
   FileCheck,
   LayoutTemplate,
   Search,
+  Image,
   BarChart3,
   Users,
   UserPlus,
@@ -36,6 +37,7 @@ const Layout = ({ children }) => {
     navigation.push(
       { name: 'Dashboard', href: '/dashboard', icon: Home },
       { name: 'Incidents', href: '/incidents', icon: FileText },
+      { name: 'Reverse Image Search', href: '/reverse-image-search', icon: Image },
       { name: 'Chat', href: '/chat', icon: MessageCircle }
     );
   } else {
@@ -47,6 +49,7 @@ const Layout = ({ children }) => {
       { name: 'Documents', href: '/documents', icon: FileCheck },
       { name: 'Templates', href: '/templates', icon: LayoutTemplate },
       { name: 'Monitoring', href: '/monitoring', icon: Search },
+      { name: 'Reverse Image Search', href: '/reverse-image-search', icon: Image },
       { name: 'Reports', href: '/reports', icon: BarChart3 }
     );
     
