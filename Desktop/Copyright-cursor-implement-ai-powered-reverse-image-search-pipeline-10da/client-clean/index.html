@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Vision AI Search - Clean</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .animate-spin {
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState } = React;
+        const { Upload, ImageIcon, Search, Loader2, AlertCircle, ExternalLink } = lucide;
+
+        const AISearchClean = () => {
+            const [file, setFile] = useState(null);
+            const [results, setResults] = useState([]);
+            const [loading, setLoading] = useState(false);
+            const [error, setError] = useState(null);
+            const [isLoggedIn, setIsLoggedIn] = useState(false);
+            const [token, setToken] = useState(null);
+
+            const API_BASE_URL = 'http://localhost:5001';
+
+            // Simple login function
+            const handleLogin = async (e) => {
+                e.preventDefault();
+                const formData = new FormData(e.target);
+                const email = formData.get('email');
+                const password = formData.get('password');
+
+                try {
+                    const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email, password })
+                    });
+
+                    const data = await response.json();
+                    
+                    if (response.ok) {
+                        setToken(data.token);
+                        setIsLoggedIn(true);
+                        setError(null);
+                    } else {
+                        setError(data.message || 'Login failed');
+                    }
+                } catch (err) {
+                    setError('Network error during login');
+                }
+            };
+
+            const handleFileChange = (e) => {
+                setFile(e.target.files[0] || null);
+            };
+
+            const handleSubmit = async (e) => {
+                e.preventDefault();
+                setError(null);
+                setResults([]);
+                setLoading(true);
+
+                try {
+                    if (!file) {
+                        setError('Please select an image file');
+                        return;
+                    }
+
+                    const formData = new FormData();
+                    formData.append('image', file);
+
+                    const response = await fetch(`${API_BASE_URL}/api/ai-search/image`, {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: formData
+                    });
+
+                    const data = await response.json();
+
+                    if (response.ok) {
+                        setResults(data.results || []);
+                    } else {
+                        setError(data.message || 'Search failed');
+                    }
+                } catch (err) {
+                    console.error('Search error:', err);
+                    setError('Search failed. Please try again.');
+                } finally {
+                    setLoading(false);
+                }
+            };
+
+            const handleLogout = () => {
+                setToken(null);
+                setIsLoggedIn(false);
+                setResults([]);
+                setFile(null);
+                setError(null);
+            };
+
+            if (!isLoggedIn) {
+                return React.createElement('div', {
+                    className: "min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8"
+                }, React.createElement('div', {
+                    className: "max-w-md w-full space-y-8"
+                }, [
+                    React.createElement('div', { key: 'header' }, [
+                        React.createElement('div', {
+                            key: 'logo',
+                            className: "mx-auto h-12 w-12 bg-yellow-500 rounded-lg flex items-center justify-center"
+                        }, React.createElement('span', {
+                            className: "text-black font-bold text-lg"
+                        }, "DSP")),
+                        React.createElement('h2', {
+                            key: 'title',
+                            className: "mt-6 text-center text-3xl font-extrabold text-gray-900"
+                        }, "Google Vision AI Search"),
+                        React.createElement('p', {
+                            key: 'subtitle',
+                            className: "mt-2 text-center text-sm text-gray-600"
+                        }, "Clean implementation without database dependencies")
+                    ]),
+                    React.createElement('form', {
+                        key: 'form',
+                        className: "mt-8 space-y-6",
+                        onSubmit: handleLogin
+                    }, [
+                        React.createElement('div', {
+                            key: 'inputs',
+                            className: "rounded-md shadow-sm -space-y-px"
+                        }, [
+                            React.createElement('div', { key: 'email' }, React.createElement('input', {
+                                id: "email",
+                                name: "email",
+                                type: "email",
+                                required: true,
+                                className: "appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-yellow-500 focus:border-yellow-500 focus:z-10 sm:text-sm",
+                                placeholder: "Email address",
+                                defaultValue: "admin@dsp.com"
+                            })),
+                            React.createElement('div', { key: 'password' }, React.createElement('input', {
+                                id: "password",
+                                name: "password",
+                                type: "password",
+                                required: true,
+                                className: "appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-yellow-500 focus:border-yellow-500 focus:z-10 sm:text-sm",
+                                placeholder: "Password",
+                                defaultValue: "admin123"
+                            }))
+                        ]),
+                        error && React.createElement('div', {
+                            key: 'error',
+                            className: "bg-red-50 border border-red-200 rounded-md p-3"
+                        }, React.createElement('div', {
+                            className: "flex"
+                        }, [
+                            React.createElement(AlertCircle, {
+                                key: 'icon',
+                                className: "h-5 w-5 text-red-400"
+                            }),
+                            React.createElement('div', {
+                                key: 'text',
+                                className: "ml-3"
+                            }, React.createElement('p', {
+                                className: "text-sm text-red-800"
+                            }, error))
+                        ])),
+                        React.createElement('div', { key: 'button' }, React.createElement('button', {
+                            type: "submit",
+                            className: "group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-yellow-600 hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500"
+                        }, "Sign in"))
+                    ])
+                ]));
+            }
+
+            return React.createElement('div', {
+                className: "min-h-screen bg-gray-50"
+            }, [
+                // Header
+                React.createElement('div', {
+                    key: 'header',
+                    className: "bg-white shadow"
+                }, React.createElement('div', {
+                    className: "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
+                }, React.createElement('div', {
+                    className: "flex justify-between items-center py-6"
+                }, [
+                    React.createElement('div', {
+                        key: 'logo',
+                        className: "flex items-center"
+                    }, [
+                        React.createElement('div', {
+                            key: 'icon',
+                            className: "h-8 w-8 bg-yellow-500 rounded-lg flex items-center justify-center"
+                        }, React.createElement('span', {
+                            className: "text-black font-bold text-sm"
+                        }, "DSP")),
+                        React.createElement('h1', {
+                            key: 'title',
+                            className: "ml-3 text-2xl font-semibold text-gray-900"
+                        }, "Google Vision AI Search")
+                    ]),
+                    React.createElement('button', {
+                        key: 'logout',
+                        onClick: handleLogout,
+                        className: "bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-md text-sm"
+                    }, "Logout")
+                ]))),
+                
+                // Main Content
+                React.createElement('div', {
+                    key: 'main',
+                    className: "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8"
+                }, React.createElement('div', {
+                    className: "space-y-6"
+                }, [
+                    // Info Banner
+                    React.createElement('div', {
+                        key: 'info',
+                        className: "bg-blue-50 border border-blue-200 rounded-lg p-4"
+                    }, React.createElement('div', {
+                        className: "flex items-start gap-3"
+                    }, [
+                        React.createElement('div', {
+                            key: 'icon',
+                            className: "flex-shrink-0"
+                        }, React.createElement(ImageIcon, {
+                            className: "h-5 w-5 text-blue-600 mt-0.5"
+                        })),
+                        React.createElement('div', {
+                            key: 'content',
+                            className: "flex-1"
+                        }, [
+                            React.createElement('h3', {
+                                key: 'title',
+                                className: "text-sm font-medium text-blue-900 mb-1"
+                            }, "How it works"),
+                            React.createElement('ul', {
+                                key: 'list',
+                                className: "text-xs text-blue-800 space-y-1"
+                            }, [
+                                React.createElement('li', { key: '1' }, "• Upload a screenshot of proprietary material"),
+                                React.createElement('li', { key: '2' }, "• AI performs reverse image search using Google Vision API"),
+                                React.createElement('li', { key: '3' }, "• Results show where the image appears on the web"),
+                                React.createElement('li', { key: '4' }, "• Click \"View Page\" to visit external websites")
+                            ])
+                        ])
+                    ])),
+
+                    // Upload Form
+                    React.createElement('form', {
+                        key: 'form',
+                        onSubmit: handleSubmit,
+                        className: "bg-white shadow rounded-lg p-6 space-y-4"
+                    }, [
+                        React.createElement('div', { key: 'upload' }, [
+                            React.createElement('label', {
+                                key: 'label',
+                                className: "block text-sm font-medium text-gray-700 mb-2"
+                            }, "Upload Screenshot (Required)"),
+                            React.createElement('label', {
+                                key: 'input',
+                                className: "flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-lg text-gray-500 hover:border-blue-400 cursor-pointer transition-colors bg-gray-50 hover:bg-blue-50"
+                            }, [
+                                React.createElement('input', {
+                                    key: 'file',
+                                    type: "file",
+                                    accept: "image/*",
+                                    className: "hidden",
+                                    onChange: handleFileChange
+                                }),
+                                React.createElement('div', {
+                                    key: 'content',
+                                    className: "flex flex-col items-center space-y-2"
+                                }, [
+                                    React.createElement(Upload, {
+                                        key: 'icon',
+                                        className: "h-8 w-8 text-gray-400"
+                                    }),
+                                    React.createElement('span', {
+                                        key: 'text',
+                                        className: "text-sm font-medium"
+                                    }, file ? file.name : 'Click to upload image for reverse search'),
+                                    React.createElement('span', {
+                                        key: 'hint',
+                                        className: "text-xs text-gray-400"
+                                    }, "PNG, JPG, GIF, WebP (Max 5MB)")
+                                ])
+                            ])
+                        ]),
+                        React.createElement('div', {
+                            key: 'buttons',
+                            className: "flex gap-3"
+                        }, [
+                            React.createElement('button', {
+                                key: 'submit',
+                                type: "submit",
+                                className: "flex-1 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md font-medium flex items-center justify-center gap-2",
+                                disabled: loading || !file
+                            }, [
+                                loading && React.createElement(Loader2, {
+                                    key: 'spinner',
+                                    className: "h-4 w-4 animate-spin"
+                                }),
+                                loading ? 'Searching...' : 'Search'
+                            ]),
+                            React.createElement('button', {
+                                key: 'reset',
+                                type: "button",
+                                className: "px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50",
+                                onClick: () => { 
+                                    setFile(null); 
+                                    setResults([]);
+                                    setError(null);
+                                }
+                            }, "Reset")
+                        ])
+                    ]),
+
+                    // Error Display
+                    error && React.createElement('div', {
+                        key: 'error',
+                        className: "bg-red-50 border border-red-200 rounded-lg p-4 flex items-center gap-2"
+                    }, [
+                        React.createElement(AlertCircle, {
+                            key: 'icon',
+                            className: "h-5 w-5 text-red-500"
+                        }),
+                        React.createElement('span', {
+                            key: 'text',
+                            className: "text-red-700"
+                        }, error)
+                    ]),
+
+                    // Results
+                    results.length > 0 && React.createElement('div', {
+                        key: 'results',
+                        className: "bg-white shadow rounded-lg p-6"
+                    }, [
+                        React.createElement('h3', {
+                            key: 'title',
+                            className: "text-lg font-medium text-gray-900 mb-4"
+                        }, `Search Results (${results.length} found)`),
+                        React.createElement('div', {
+                            key: 'list',
+                            className: "space-y-4"
+                        }, results.map((result, index) => React.createElement('div', {
+                            key: index,
+                            className: "border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors"
+                        }, React.createElement('div', {
+                            className: "flex items-start justify-between gap-4"
+                        }, [
+                            React.createElement('div', {
+                                key: 'content',
+                                className: "flex-1"
+                            }, [
+                                React.createElement('div', {
+                                    key: 'header',
+                                    className: "flex items-center gap-2 flex-wrap mb-2"
+                                }, [
+                                    React.createElement('h4', {
+                                        key: 'title',
+                                        className: "font-medium text-gray-900"
+                                    }, result.title),
+                                    result.platform && React.createElement('span', {
+                                        key: 'platform',
+                                        className: "px-2 py-1 text-xs rounded-full bg-indigo-100 text-indigo-800 font-medium"
+                                    }, result.platform),
+                                    React.createElement('span', {
+                                        key: 'type',
+                                        className: `px-2 py-1 text-xs rounded-full font-medium ${
+                                            result.type === 'page-match'
+                                                ? 'bg-red-100 text-red-800'
+                                                : result.type === 'web-entity'
+                                                ? 'bg-purple-100 text-purple-800'
+                                                : 'bg-gray-100 text-gray-800'
+                                        }`
+                                    }, result.type.replace('-', ' '))
+                                ]),
+                                React.createElement('p', {
+                                    key: 'description',
+                                    className: "text-sm text-gray-600 mb-2"
+                                }, result.description),
+                                React.createElement('div', {
+                                    key: 'meta',
+                                    className: "flex items-center gap-4 text-xs text-gray-500"
+                                }, React.createElement('span', {
+                                    className: "font-medium"
+                                }, `Confidence: ${Math.round(result.similarity * 100)}%`))
+                            ]),
+                            React.createElement('div', {
+                                key: 'action',
+                                className: "flex-shrink-0"
+                            }, result.externalUrl ? React.createElement('a', {
+                                href: result.url,
+                                target: "_blank",
+                                rel: "noopener noreferrer",
+                                className: "inline-flex items-center gap-1 px-3 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md transition-colors"
+                            }, [
+                                "View Page ",
+                                React.createElement(ExternalLink, {
+                                    key: 'icon',
+                                    className: "h-4 w-4"
+                                })
+                            ]) : React.createElement('a', {
+                                href: result.url,
+                                className: "inline-flex items-center gap-1 px-3 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md transition-colors"
+                            }, "View Details"))
+                        ]))))
+                    ]),
+
+                    // Empty State
+                    !loading && results.length === 0 && !error && React.createElement('div', {
+                        key: 'empty',
+                        className: "bg-white shadow rounded-lg p-6"
+                    }, React.createElement('div', {
+                        className: "text-center text-gray-500"
+                    }, [
+                        React.createElement(ImageIcon, {
+                            key: 'icon',
+                            className: "h-12 w-12 mx-auto mb-4 text-gray-300"
+                        }),
+                        React.createElement('p', {
+                            key: 'text'
+                        }, "Upload an image to start reverse image search on the web")
+                    ]))
+                ]))
+            ]);
+        };
+
+        ReactDOM.render(React.createElement(AISearchClean), document.getElementById('root'));
+    </script>
+</body>
+</html>
