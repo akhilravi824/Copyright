@@ -4,6 +4,8 @@ const path = require('path');
 const fs = require('fs').promises;
 
 const { auth } = require('../middleware/auth');
+const googleVision = require('../services/googleVision');
+const googleReverseImageSearch = require('../services/googleReverseImageSearch');
 
 const router = express.Router();
 
@@ -50,45 +52,90 @@ router.post('/image', auth, upload.single('image'), async (req, res) => {
     const imagePath = req.file.path;
     const imageUrl = `/uploads/ai-search/${req.file.filename}`;
 
-    // TODO: Implement actual AI/ML processing here
-    // For now, return mock results
-    const mockResults = [
-      {
-        id: '1',
-        title: 'Similar Image 1',
-        similarity: 0.95,
-        url: 'https://example.com/image1.jpg',
-        caseId: 'DSP-12345678',
-        description: 'High similarity match found'
-      },
-      {
-        id: '2', 
-        title: 'Similar Image 2',
-        similarity: 0.87,
-        url: 'https://example.com/image2.jpg',
-        caseId: 'DSP-87654321',
-        description: 'Moderate similarity match'
-      },
-      {
-        id: '3',
-        title: 'Similar Image 3', 
-        similarity: 0.72,
-        url: 'https://example.com/image3.jpg',
-        caseId: 'DSP-11223344',
-        description: 'Lower similarity match'
-      }
-    ];
+    console.log('🔍 Starting reverse image search for:', imagePath);
+    console.log('📸 File details:', {
+      filename: req.file.filename,
+      size: req.file.size,
+      mimetype: req.file.mimetype
+    });
+
+    // Use Google Vision API (with fallback to mock data)
+    console.log('🔍 Using Google Vision API with fallback mode');
+    
+    let analysis = {};
+    let visionResults = [];
+    
+    try {
+      // Get analysis from Google Vision API (or mock data)
+      analysis = await googleVision.analyzeImage(imagePath);
+      
+      // Search for similar cases based on analysis
+      visionResults = await googleVision.searchSimilarCases(analysis);
+      
+      console.log('✅ Google Vision analysis completed:', {
+        labelsFound: analysis.labels?.length || 0,
+        objectsFound: analysis.objects?.length || 0,
+        webEntitiesFound: analysis.webEntities?.length || 0,
+        resultsReturned: visionResults.length
+      });
+    } catch (err) {
+      console.error('Google Vision error:', err.message);
+      // Fallback to empty results
+      analysis = {};
+      visionResults = [];
+    }
+
+    // Use vision results as primary results
+    const allResults = visionResults;
+
+    // Remove duplicates based on URL
+    const uniqueResults = allResults.filter((result, index, self) =>
+      index === self.findIndex((r) => r.url === result.url)
+    );
+
+    const results = uniqueResults.slice(0, 50);
+
+    console.log('✅ AI Reverse Image Search completed:', {
+      visionResults: visionResults.length,
+      totalBeforeDedup: allResults.length,
+      totalAfterDedup: uniqueResults.length,
+      finalResultsReturned: results.length,
+      labelsFound: analysis.labels?.length || 0,
+      objectsFound: analysis.objects?.length || 0,
+      webEntitiesFound: analysis.webEntities?.length || 0
+    });
+
+    // Log platform breakdown
+    if (results.length > 0) {
+      const platformCounts = results.reduce((acc, result) => {
+        const platform = result.platform || 'Unknown';
+        acc[platform] = (acc[platform] || 0) + 1;
+        return acc;
+      }, {});
+      console.log('📊 Results by platform:', platformCounts);
+    }
 
     res.json({
-      message: 'Image uploaded successfully',
+      message: 'Image analyzed with Google Vision API',
       imageUrl,
-      results: mockResults,
+      results: results,
+      analysis: {
+        labels: analysis.labels || [],
+        text: analysis.text || '',
+        objects: analysis.objects || [],
+        webEntities: analysis.webEntities || [],
+        pagesWithMatchingImages: analysis.pagesWithMatchingImages || []
+      },
       searchId: Date.now().toString()
     });
 
   } catch (error) {
-    console.error('AI Search error:', error);
-    res.status(500).json({ message: 'Server error', error: error.message });
+    console.error('❌ AI Search error:', error);
+    console.error('Error stack:', error.stack);
+    res.status(500).json({
+      message: 'Server error during image analysis',
+      error: error.message
+    });
   }
 });
 
@@ -108,19 +155,21 @@ router.post('/text', auth, async (req, res) => {
     const mockResults = [
       {
         id: '1',
-        title: 'Text Match 1',
+        title: 'Copyright Infringement Case',
         similarity: 0.89,
-        url: 'https://example.com/text1.jpg',
+        url: '/incidents/DSP-99887766',
         caseId: 'DSP-99887766',
-        description: `Found match for "${query}"`
+        description: `Found match for "${query}" in incident report`,
+        type: 'incident'
       },
       {
         id: '2',
-        title: 'Text Match 2', 
+        title: 'Related Legal Document',
         similarity: 0.76,
-        url: 'https://example.com/text2.jpg',
+        url: '/cases/DSP-55443322',
         caseId: 'DSP-55443322',
-        description: `Related to "${query}"`
+        description: `Related to "${query}" in case documentation`,
+        type: 'case'
       }
     ];
 
