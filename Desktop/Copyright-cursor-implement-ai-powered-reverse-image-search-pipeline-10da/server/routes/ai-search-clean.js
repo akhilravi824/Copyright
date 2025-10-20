@@ -5,6 +5,8 @@ const path = require('path');
 const fs = require('fs').promises;
 const vision = require('@google-cloud/vision');
 
+const { auth } = require('../middleware/auth');
+
 const router = express.Router();
 
 // Clean Google Vision Service (minimal version)
