@@ -57,7 +57,7 @@ router.post('/register', auth, requireRole('admin'), [
       // Generate JWT token
       const token = jwt.sign(
         { userId: newUser.id, email: newUser.email, role: newUser.role },
-        process.env.JWT_SECRET,
+        process.env.JWT_SECRET || 'fallback-secret-key',
         { expiresIn: '24h' }
       );
 
@@ -107,7 +107,7 @@ router.post('/register', auth, requireRole('admin'), [
       // Generate JWT token
       const token = jwt.sign(
         { userId: newUser._id, email: newUser.email, role: newUser.role },
-        process.env.JWT_SECRET,
+        process.env.JWT_SECRET || 'fallback-secret-key',
         { expiresIn: '24h' }
       );
 
@@ -170,7 +170,7 @@ router.post('/login', [
       // Generate JWT token
       const token = jwt.sign(
         { userId: user.id, email: user.email, role: user.role },
-        process.env.JWT_SECRET,
+        process.env.JWT_SECRET || 'fallback-secret-key',
         { expiresIn: '24h' }
       );
 
@@ -217,7 +217,7 @@ router.post('/login', [
       // Generate JWT token
       const token = jwt.sign(
         { userId: user._id, email: user.email, role: user.role },
-        process.env.JWT_SECRET,
+        process.env.JWT_SECRET || 'fallback-secret-key',
         { expiresIn: '24h' }
       );
 

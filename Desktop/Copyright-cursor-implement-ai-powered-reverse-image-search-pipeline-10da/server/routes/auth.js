@@ -59,7 +59,7 @@ router.post('/register', auth, requireRole('admin'), [
           email: user.email, 
           role: user.role 
         },
-        process.env.JWT_SECRET,
+        process.env.JWT_SECRET || 'fallback-secret-key',
         { expiresIn: '24h' }
       );
 
@@ -107,7 +107,7 @@ router.post('/register', auth, requireRole('admin'), [
           email: user.email, 
           role: user.role 
         },
-        process.env.JWT_SECRET,
+        process.env.JWT_SECRET || 'fallback-secret-key',
         { expiresIn: '24h' }
       );
 
@@ -178,7 +178,7 @@ router.post('/login', [
           email: user.email, 
           role: user.role 
         },
-        process.env.JWT_SECRET,
+        process.env.JWT_SECRET || 'fallback-secret-key',
         { expiresIn: '24h' }
       );
 
@@ -223,7 +223,7 @@ router.post('/login', [
           email: user.email, 
           role: user.role 
         },
-        process.env.JWT_SECRET,
+        process.env.JWT_SECRET || 'fallback-secret-key',
         { expiresIn: '24h' }
       );
 
