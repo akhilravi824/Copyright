@@ -64,6 +64,7 @@ const Layout = ({ children }) => {
     // Add chat and AI Search for everyone - updated
     navigation.push({ name: 'Chat', href: '/chat', icon: MessageCircle });
     navigation.push({ name: 'AI Search', href: '/ai-search', icon: Search });
+    navigation.push({ name: 'Clean AI Search', href: '/ai-search-clean', icon: Search });
   }
 
   const isActive = (href) => {
@@ -101,8 +102,8 @@ const Layout = ({ children }) => {
           </div>
           <div className="flex-1 h-0 pt-5 pb-4 overflow-y-auto">
             <div className="flex-shrink-0 flex items-center px-4">
-              <div className="h-8 w-8 bg-blue-600 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-sm">DSP</span>
+              <div className="h-8 w-8 bg-yellow-500 rounded-lg flex items-center justify-center">
+                <span className="text-black font-bold text-sm">DSP</span>
               </div>
               <span className="ml-2 text-white font-semibold">Brand Protection</span>
             </div>
@@ -149,8 +150,8 @@ const Layout = ({ children }) => {
           <div className="flex flex-col h-0 flex-1 bg-gray-900">
             <div className="flex-1 flex flex-col pt-5 pb-4 overflow-y-auto">
               <div className="flex items-center flex-shrink-0 px-4">
-                <div className="h-8 w-8 bg-blue-600 rounded-lg flex items-center justify-center">
-                  <span className="text-white font-bold text-sm">DSP</span>
+                <div className="h-8 w-8 bg-yellow-500 rounded-lg flex items-center justify-center">
+                  <span className="text-black font-bold text-sm">DSP</span>
                 </div>
                 <span className="ml-2 text-white font-semibold">Brand Protection</span>
               </div>

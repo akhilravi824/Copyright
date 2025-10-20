@@ -23,6 +23,7 @@ import DeletedIncidents from './pages/DeletedIncidents';
 import LoadingSpinner from './components/LoadingSpinner';
 import AuthCallback from './components/AuthCallback';
 import AISearch from './pages/AISearch';
+import CleanAISearch from './pages/CleanAISearch';
 
 function App() {
   const { user, loading } = useAuth();
@@ -60,7 +61,8 @@ function App() {
         <Route path="/cases/:id" element={<CaseDetail />} />
         <Route path="/documents" element={<Documents />} />
         <Route path="/templates" element={<Templates />} />
-        <Route path="/ai-search" element={<AISearch />} />
+              <Route path="/ai-search" element={<AISearch />} />
+              <Route path="/ai-search-clean" element={<CleanAISearch />} />
         <Route path="/monitoring" element={<Monitoring />} />
         <Route path="/reports" element={<Reports />} />
         <Route path="/users" element={<Users />} />
