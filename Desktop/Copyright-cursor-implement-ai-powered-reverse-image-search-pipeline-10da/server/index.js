@@ -73,6 +73,8 @@ app.use('/api/templates', require('./routes/templates'));
 // AI Search routes
 app.use('/api/ai-search', require('./routes/ai-search'));
 app.use('/api/ai-search-clean', require('./routes/ai-search-clean'));
+// Backward compatibility route
+app.use('/api/reverse-image-search', require('./routes/ai-search'));
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
